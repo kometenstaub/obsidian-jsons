@@ -20,8 +20,10 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             unencoded_url_part : str = "/".join(split_path)
             url += urllib.parse.quote(unencoded_url_part)
             url = url.replace("%20", "+")
+            if url == "https://help.obsidian.md/Obsidian/Index.md":
+                url = url.replace("Obsidian/", "")
             print(url)
 
-            print(f"Found file: {file_name}")
+            #print(f"Found file: {file_name}")
             #print(normalised_path)
 
