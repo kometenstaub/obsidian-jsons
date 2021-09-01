@@ -8,6 +8,15 @@ import urllib.parse
 
 color : int = 3092790
 
+# append first part of tagscript
+with open("tagscript", "a", encoding="utf-8") as t:
+    t.write("""
+{=(b-obsidian):Obsidian/Obsidian}
+{c:cembed https://raw.githubusercontent.com/kometenstaub/obsidian-docs-json/main/{{path-to-json}}}\n\n
+""")
+
+github_url : str = "https://raw.githubusercontent.com/kometenstaub/obsidian-docs-json/main/"
+
 for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
     #print(f"Found directory: {dirnames}, located here:{dirpath}")
     for file_name in files:
@@ -63,6 +72,17 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             json_path = json_path.replace(".md", ".json")
 
             # write json files
+            # bash command to remove after created; otherwise uncomment two lines after it for further testing
+            # find ./obsidian-jsons -name "*.json" -type f -delete
             with open(f"obsidian-jsons/{json_path}", "w", encoding="utf-8") as j:
                 j.write(json_string)
+
+            # append files for tagscript file
+            tagscript_title : str = title.replace(" ", "-").lower()
+            after_github_path : str = urllib.parse.quote(json_path)
+
+            tagscript_file : str = "{=(" + tagscript_title + "):" + after_github_path + "}\n"
+
+            with open("tagscript", "a", encoding="utf-8") as t:
+                t.write(tagscript_file)
             
