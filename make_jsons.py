@@ -7,13 +7,11 @@ import urllib.parse
 #description_regex_small = r"^.*(?:\n.*){5}"
 
 color : int = 3092790
-
-# append first part of tagscript
-with open("tagscript", "a", encoding="utf-8") as t:
-    t.write("""
+tagscript_file : str = """
 {=(b-obsidian):Obsidian/Obsidian}
 {c:cembed https://raw.githubusercontent.com/kometenstaub/obsidian-docs-json/main/{{path-to-json}}}\n\n
-""")
+"""
+tagscript_file_list : list = []
 
 github_url : str = "https://raw.githubusercontent.com/kometenstaub/obsidian-docs-json/main/"
 
@@ -81,8 +79,11 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             tagscript_title : str = title.replace(" ", "-").lower()
             after_github_path : str = urllib.parse.quote(json_path)
 
-            tagscript_file : str = "{=(" + tagscript_title + "):" + after_github_path + "}\n"
-
-            with open("tagscript", "a", encoding="utf-8") as t:
-                t.write(tagscript_file)
+            tagscript_file_list.append("{=(" + tagscript_title + "):" + after_github_path + "}")
             
+
+tagscript_file += "\n".join(tagscript_file_list)
+
+# write tagscript
+with open("tagscript", "w", encoding="utf-8") as t:
+    t.write(tagscript_file)
