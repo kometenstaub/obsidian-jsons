@@ -4,6 +4,9 @@ import json
 import re
 import urllib.parse
 
+description_regex = r"^.*(?:\n.*){10}"
+description_regex_small = r"^.*(?:\n.*){5}"
+
 for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
     #print(f"Found directory: {dirnames}, located here:{dirpath}")
     for file_name in files:
@@ -30,8 +33,24 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             file_dict["title"] = title
             
             file_dict["color"] = color
-            print(file_dict)
 
             #print(f"Found file: {file_name}")
             #print(normalised_path)
 
+
+            with open(normalised_path, "r", encoding="utf-8") as f:
+                content = "".join(f.readlines())
+                #print(content)
+                match = re.search(description_regex, content)
+                result : str = ""
+                if match:
+                    result = match.group()
+                else:
+                    new_match = re.search(description_regex_small, content)
+                    if new_match:
+                        result = new_match.group()
+                    else:
+                        result = ""
+                file_dict["description"] = result
+
+            #print(file_dict)
