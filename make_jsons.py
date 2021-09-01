@@ -22,6 +22,7 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             url = url.replace("%20", "+")
             if url == "https://help.obsidian.md/Obsidian/Index.md":
                 url = url.replace("Obsidian/", "")
+            url = url.replace(".md", "")
             print(url)
 
             #print(f"Found file: {file_name}")
