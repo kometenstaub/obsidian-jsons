@@ -14,7 +14,7 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             url : str = "https://help.obsidian.md/"
             title : str = ""
             description : str = ""
-            color : str = ""
+            color : int = 3092790
 
             split_path : list = normalised_path.split("/")[2:]
             unencoded_url_part : str = "/".join(split_path)
@@ -23,9 +23,13 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             if url == "https://help.obsidian.md/Obsidian/Index.md":
                 url = url.replace("Obsidian/", "")
             url = url.replace(".md", "")
-            print(url)
-
+            #print(url)
             file_dict["url"] = url
+            
+            title = file_name.replace(".md", "")
+            file_dict["title"] = title
+            
+            file_dict["color"] = color
             print(file_dict)
 
             #print(f"Found file: {file_name}")
