@@ -3,8 +3,8 @@ import os
 import json
 import urllib.parse
 
-description_regex = r"^.*(?:\n.*){10}"
-description_regex_small = r"^.*(?:\n.*){5}"
+#description_regex = r"^.*(?:\n.*){10}"
+#description_regex_small = r"^.*(?:\n.*){5}"
 
 color : int = 3092790
 
@@ -38,7 +38,7 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             file_dict["color"] = color
 
             #print(f"Found file: {file_name}")
-            #print(normalised_path)
+            print(normalised_path)
 
             # description
             with open(normalised_path, "r", encoding="utf-8") as f:
@@ -54,4 +54,15 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
 
             #print(file_dict)
 
+            # convert dict to json
+            json_string = json.dumps(file_dict, indent=4)
+
+            # make file path for json file
+            json_path = normalised_path.split("/")[2:]
+            json_path = "/".join(json_path)
+            json_path = json_path.replace(".md", ".json")
+
+            # write json files
+            with open(f"obsidian-jsons/{json_path}", "w", encoding="utf-8") as j:
+                j.write(json_string)
             
