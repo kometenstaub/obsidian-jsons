@@ -25,6 +25,9 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             url = url.replace(".md", "")
             print(url)
 
+            file_dict["url"] = url
+            print(file_dict)
+
             #print(f"Found file: {file_name}")
             #print(normalised_path)
 
