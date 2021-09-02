@@ -2,9 +2,15 @@
 import os
 import json
 import urllib.parse
+import sys
 
-#description_regex = r"^.*(?:\n.*){10}"
-#description_regex_small = r"^.*(?:\n.*){5}"
+if_json : bool = False
+
+try:
+    if sys.argv[1].lower() == "json":
+        if_json = True
+except:
+    pass
 
 color : int = 3092790
 tagscript_file : str = """
@@ -74,21 +80,18 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             json_path = "/".join(json_path)
             json_path = json_path.replace(".md", ".json")
 
-            # write json files
-            # bash command to remove after created; otherwise uncomment two lines after it for further testing
-            # find ./obsidian-jsons -name "*.json" -type f -delete
-
-            # check if directory already exists; if not, create it
-            if not os.path.isdir(f"obsidian-jsons/{json_folder}"):
-                os.makedirs(f"obsidian-jsons/{json_folder}")
-
-            with open(f"obsidian-jsons/{json_path}", "w", encoding="utf-8") as j:
-                j.write(json_string)
+            # write json files only if "json" argument provided
+            if if_json:
+                # check if directory already exists; if not, create it
+                if not os.path.isdir(f"obsidian-jsons/{json_folder}"):
+                    os.makedirs(f"obsidian-jsons/{json_folder}")
+                # write the json string
+                with open(f"obsidian-jsons/{json_path}", "w", encoding="utf-8") as j:
+                    j.write(json_string)
 
             # append files for tagscript file
             tagscript_title : str = title.replace(" ", "-").lower()
             after_github_path : str = urllib.parse.quote(json_path)
-
             tagscript_file_list.append("{=(" + tagscript_title + "):" + after_github_path + "}")
             
 
