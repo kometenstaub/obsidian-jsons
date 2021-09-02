@@ -64,14 +64,24 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             # convert dict to json
             json_string = json.dumps(file_dict, indent=4)
 
+
             # make file path for json file
             json_path = normalised_path.split("/")[2:]
+
+            # json_folder is where the jsons will we stored
+            json_folder : str = "/".join(json_path[:-1])
+
             json_path = "/".join(json_path)
             json_path = json_path.replace(".md", ".json")
 
             # write json files
             # bash command to remove after created; otherwise uncomment two lines after it for further testing
             # find ./obsidian-jsons -name "*.json" -type f -delete
+
+            # check if directory already exists; if not, create it
+            if not os.path.isdir(f"obsidian-jsons/{json_folder}"):
+                os.makedirs(f"obsidian-jsons/{json_folder}")
+
             with open(f"obsidian-jsons/{json_path}", "w", encoding="utf-8") as j:
                 j.write(json_string)
 
