@@ -41,3 +41,7 @@ python3 make_jsons.py
 The json files will be overwritten each time you run this script with the `json` argument, so no need to delete the folder manually.
 
 Every time, the `tagscript` file will be created. It is also overwritten each time you run the script again, the `json` argument doesn't influence this behaviour.
+
+### Hosting the json files
+
+Modify `github_url` to the base URL of where the json files will be hosted. Depending on the hosting provider, you may also need to change `json_path`.
