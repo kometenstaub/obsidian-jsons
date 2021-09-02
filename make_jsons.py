@@ -40,7 +40,6 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             if url == "https://help.obsidian.md/Obsidian/Index.md":
                 url = url.replace("Obsidian/", "")
             url = url.replace(".md", "")
-            #print(url)
             file_dict["url"] = url
             
             # title
@@ -61,8 +60,6 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                 else:
                     result = "".join(content)
                 file_dict["description"] = result
-
-            #print(file_dict)
 
             # convert dict to json
             json_string = json.dumps(file_dict, indent=4)
