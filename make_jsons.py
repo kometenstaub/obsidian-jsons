@@ -50,9 +50,6 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             # color
             file_dict["color"] = color
 
-            #print(f"Found file: {file_name}")
-            #print(normalised_path)
-
             # description
             with open(normalised_path, "r", encoding="utf-8") as f:
                 content : dict = f.readlines()
