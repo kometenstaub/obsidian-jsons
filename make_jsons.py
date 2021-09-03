@@ -56,7 +56,7 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                 url = url.replace("%20", "+")
                 if url == "https://help.obsidian.md/Obsidian/Index.md":
                     url = url.replace("Obsidian/", "")
-                url = url.replace(".md", "")
+                url = url[:-3]
                 file_dict["url"] = url
             
                 # title
@@ -76,17 +76,24 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                     #        result = result[:2000]
                     #else:
                     #    result = "".join(content)
-                    result = re.findall(r"^#{1,4}\s(.+)", content_str, re.MULTILINE)
+                    result = re.findall(r"^(#{1,4})\s(.+)", content_str, re.MULTILINE)
                     # if there are no headings, use the raw text
-                    if len(result) == 0 len(content) >= 10:
+                    if len(result) == 0 and len(content) >= 10:
                         result = "".join(content[:10])
                         if len(result) >= 2000:
                             result = result[:2000]
                     elif len(content) < 10:
                         result = "".join(content)
                     else:
-                        
+                        result_headings : list = []
+                        for el in result:
+                            heading : str = el[0] + f" [{el[1]}]" + f"({url}/"
+                            heading += "#" + urllib.parse.quote(el[1]).replace("%20", "+") + ")"
+                            result_headings.append(heading)
+                        result = "\n\n".join(result_headings)
+
                     print(file_name)
+                    #print(normalised_path)
                     print(result)
                     file_dict["description"] = result
 
