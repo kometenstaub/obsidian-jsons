@@ -3,3 +3,4 @@ obsidian-jsons/
 example.json
 .vscode/
 tagscript
+__pycache__/

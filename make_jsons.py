@@ -5,6 +5,7 @@ import urllib.parse
 import sys
 import requests
 import re
+from paste_ids import to_delete
 
 api_dev_key : str = ""
 api_user_key : str = ""
@@ -22,8 +23,26 @@ try:
 except:
     pass
 
-print(api_dev_key)
-print(api_user_key)
+#print(api_dev_key)
+#print(api_user_key)
+
+
+
+
+# deletion of old pastes
+
+if os.path.isfile("paste_ids.py"):
+    if len(to_delete) > 0:
+        for el in to_delete:
+            data_to_delete : dict = {'api_dev_key':api_dev_key, 'api_user_key':api_user_key, 'api_option':'delete', 'api_paste_key':el}
+            removed_paste = requests.post(url="https://pastebin.com/api/api_post.php", data=data_to_delete)
+            removed_paste = removed_paste.text
+            print(removed_paste)
+        with open("paste_ids.py", "w", encoding="utf-8") as p:
+            p.write("to_delete = []")
+
+
+
 
 #raise Exception
 
@@ -68,16 +87,16 @@ def replace_links(content_str : str) -> str:
 
 
 #print(all_urls)
-counter : int = 0
+#counter : int = 0
 
 for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
     #print(f"Found directory: {dirnames}, located here:{dirpath}")
     for file_name in files:
         if file_name.endswith(".md"):
             normalised_path = os.path.normpath(dirpath + "/" + file_name)
-            if file_name in included_files and counter < 1:
+            if file_name in included_files:# and counter < 3:
                 # TODO: remove counter when API works
-                counter += 1
+                #counter += 1
 
                 file_dict : dict = {}
                 url : str = "https://help.obsidian.md/"
@@ -129,14 +148,14 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                             result_headings.append(heading)
                         result = "\n\n".join(result_headings)
 
-                    print(file_name)
+                    #print(file_name)
                     #print(normalised_path)
-                    print(result)
+                    #print(result)
                     file_dict["description"] = result
 
                 # convert dict to json
                 json_string = json.dumps(file_dict, indent=4)
-                print(json_string)
+                #print(json_string)
 
                 # make file path for json file
                 #json_path = normalised_path.split("/")[2:]
@@ -161,6 +180,7 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                 # TODO: make the POST request to pastebin
                 pastebin_id = requests.post(url="https://pastebin.com/api/api_post.php", data=data_to_post)
                 pastebin_id = pastebin_id.text
+                pastebin_id = str(pastebin_id.split("/")[-1])
                 print(pastebin_id)
 
                 paste_ids.append(pastebin_id)

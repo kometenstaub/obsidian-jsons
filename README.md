@@ -1,6 +1,6 @@
 # Obsidian docs to json for Carl-bot
 
-This repo contains a python script that will transform the Obsidian docs into json files (limited to the first 10 lines of each file) for use with Carl-bot.
+This repo contains a python script that will transform the Obsidian docs into json files (limited to the first 10 lines of each file or all the headings, if any) for use with Carl-bot.
 
 ## Installation
 
@@ -29,19 +29,10 @@ if you want to use HTTPS.
 If you want to create the json files:
 
 ```bash
-python3 make_jsons.py json
+python3 make_jsons.py <api_dev_key> <api_user_key>
 ```
 
-If you don't want to create the json files (mainly for testing):
 
-```bash
-python3 make_jsons.py
-```
+All files will be uploaded, the old files will be deleted on Pastebin.
 
-The json files will be overwritten each time you run this script with the `json` argument, so no need to delete the folder manually.
-
-Every time, the `tagscript` file will be created. It is also overwritten each time you run the script again, the `json` argument doesn't influence this behaviour.
-
-### Hosting the json files
-
-Modify `github_url` to the base URL of where the json files will be hosted. Depending on the hosting provider, you may also need to change `json_path`.
+The `tagscript` file is updated every time, so is the `paste_ids.py` file.
