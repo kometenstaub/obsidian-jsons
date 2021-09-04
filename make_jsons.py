@@ -33,7 +33,26 @@ github_url : str = "https://raw.githubusercontent.com/kometenstaub/obsidian-docs
 
 included_files : list = ["Android app.md", "iOS app.md", "Mobile app beta.md", "Obsidian.md", "Obsidian Mobile.md", "How Obsidian stores data.md", "Third-party plugins.md", "Insider builds.md", "YAML front matter.md", "Catalyst license.md", "Commercial license.md", "Obsidian Publish.md", "Obsidian Sync.md", "Obsidian Unlimited.md", "Refund policy.md", "Add aliases to note.md", "Folding.md", "Format your notes.md", "Link to blocks.md", "Templates.md"] 
 
-counter : int = 0
+#counter : int = 0
+
+all_urls : dict = {}
+
+for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
+    for file_name in files:
+        if file_name.endswith(".md"):
+            normalised_path = os.path.normpath(dirpath + "/" + file_name)
+            url : str = "https://help.obsidian.md/"
+            # URL
+            split_path : list = normalised_path.split("/")[2:]
+            unencoded_url_part : str = "/".join(split_path)
+            url += urllib.parse.quote(unencoded_url_part)
+            url = url.replace("%20", "+")
+            if url == "https://help.obsidian.md/Obsidian/Index.md":
+                url = url.replace("Obsidian/", "")
+            url = url[:-3]
+            all_urls[file_name[:-3]] = url
+
+#print(all_urls)
 
 for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
     #print(f"Found directory: {dirnames}, located here:{dirpath}")
@@ -42,7 +61,7 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             normalised_path = os.path.normpath(dirpath + "/" + file_name)
             if file_name in included_files:
                 # TODO: remove counter when API works
-                counter += 1
+                #counter += 1
 
                 file_dict : dict = {}
                 url : str = "https://help.obsidian.md/"
@@ -65,7 +84,6 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             
                 # color
                 file_dict["color"] = color
-
                 # description
                 with open(normalised_path, "r", encoding="utf-8") as f:
                     content = f.readlines()
@@ -78,8 +96,16 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                     #    result = "".join(content)
                     result = re.findall(r"^(#{1,4})\s(.+)", content_str, re.MULTILINE)
                     # if there are no headings, use the raw text
-                    if len(result) == 0 and len(content) >= 10:
+                    if len(result) == 0:
                         result = "".join(content[:10])
+                        link_result = re.compile(r"\[\[(.*?)(?=(?:\]\]|#|\|))(?:.+?)?\]\]", re.MULTILINE)
+                        for match in link_result.finditer(content_str):
+                            print(match.group(1))
+                            print(match.group(0))
+                            link_url : str = all_urls[match.group(1)]
+                            content_str = content_str.replace(match.group(0), f"[{match.group(1)}]({link_url})")
+                            
+                        print(content_str)
                         if len(result) >= 2000:
                             result = result[:2000]
                     elif len(content) < 10:
@@ -92,9 +118,9 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                             result_headings.append(heading)
                         result = "\n\n".join(result_headings)
 
-                    print(file_name)
+                    #print(file_name)
                     #print(normalised_path)
-                    print(result)
+                    #print(result)
                     file_dict["description"] = result
 
                 # convert dict to json
