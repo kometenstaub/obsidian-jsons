@@ -176,7 +176,7 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
 
                 # append files for tagscript file
                 tagscript_title : str = title.replace(" ", "-").lower()
-                tagscript_file_list.append("{=(" + tagscript_title + "):" + str(pastebin_id) + "}")
+                tagscript_file_list.append("{=(" + tagscript_title + "):" + pastebin_id + "}")
             
 
 tagscript_file += "\n".join(tagscript_file_list)
