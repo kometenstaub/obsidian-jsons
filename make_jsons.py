@@ -5,11 +5,18 @@ import urllib.parse
 import sys
 import requests
 import re
+
+
+if os.path.isfile("paste_ids.py"):
+    print("paste_ids.py is already present")
+else:
+    with open("paste_ids.py", "w", encoding="utf-8") as p:
+        p.write("to_delete = []")
+
 from paste_ids import to_delete
 
 api_dev_key : str = ""
 api_user_key : str = ""
-
 
 try:
     if sys.argv[1]:
