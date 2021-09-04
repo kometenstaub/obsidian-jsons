@@ -40,7 +40,7 @@ The `tagscript` file is updated every time, so is the `paste_ids.py` file.
 
 ## Testing
 
-For testing, I have left in the counter variable. You need to uncomment it at three places if you want to limit deletions and uploads:
+For testing, I have left in the counter variable. You need to uncomment it in three places if you want to limit uploads:
 
 ```python
 #counter : int = 0
