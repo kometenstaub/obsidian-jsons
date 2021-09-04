@@ -51,20 +51,17 @@ all_urls : dict = {}
 
 paste_ids : list = []
 
-for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
-    for file_name in files:
-        if file_name.endswith(".md"):
-            normalised_path = os.path.normpath(dirpath + "/" + file_name)
-            url : str = "https://help.obsidian.md/"
-            # URL
-            split_path : list = normalised_path.split("/")[2:]
-            unencoded_url_part : str = "/".join(split_path)
-            url += urllib.parse.quote(unencoded_url_part)
-            url = url.replace("%20", "+")
-            if url == "https://help.obsidian.md/Obsidian/Index.md":
-                url = url.replace("Obsidian/", "")
-            url = url[:-3]
-            all_urls[file_name[:-3]] = url
+
+def get_url(normalised_path : str) -> str:
+    url : str = "https://help.obsidian.md/"
+    split_path : list = normalised_path.split("/")[2:]
+    unencoded_url_part : str = "/".join(split_path)
+    url += urllib.parse.quote(unencoded_url_part)
+    url = url.replace("%20", "+")
+    if url == "https://help.obsidian.md/Obsidian/Index.md":
+        url = url.replace("Obsidian/", "")
+    url = url[:-3]
+    return url
 
 def replace_links(content_str : str) -> str:
     content_str = content_str
@@ -74,32 +71,34 @@ def replace_links(content_str : str) -> str:
         content_str = content_str.replace(match.group(0), f"[{match.group(1)}]({link_url})")
     return content_str
 
+for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
+    for file_name in files:
+        if file_name.endswith(".md"):
+            normalised_path = os.path.normpath(dirpath + "/" + file_name)
+            # URL
+            url = get_url(normalised_path)
+            all_urls[file_name[:-3]] = url
+
+
 
 #print(all_urls)
-#counter : int = 0
+counter : int = 0
 
 for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
     #print(f"Found directory: {dirnames}, located here:{dirpath}")
     for file_name in files:
         if file_name.endswith(".md"):
             normalised_path = os.path.normpath(dirpath + "/" + file_name)
-            if file_name in included_files:# and counter < 3:
+            if file_name in included_files and counter < 3:
                 # TODO: remove counter when API works
-                #counter += 1
+                counter += 1
 
                 file_dict : dict = {}
-                url : str = "https://help.obsidian.md/"
                 title : str = ""
                 description : str = ""
 
                 # URL
-                split_path : list = normalised_path.split("/")[2:]
-                unencoded_url_part : str = "/".join(split_path)
-                url += urllib.parse.quote(unencoded_url_part)
-                url = url.replace("%20", "+")
-                if url == "https://help.obsidian.md/Obsidian/Index.md":
-                    url = url.replace("Obsidian/", "")
-                url = url[:-3]
+                url = get_url(normalised_path)
                 file_dict["url"] = url
             
                 # title
