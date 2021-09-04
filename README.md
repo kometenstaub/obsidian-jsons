@@ -38,3 +38,19 @@ All files will be uploaded, the old files will be deleted on Pastebin.
 The `tagscript` file is updated every time, so is the `paste_ids.py` file.
 
 Before the script is run the first time, you need to make sure that the list in `paste_ids.py` is empty. (Because it still includes the IDs from my tests. For subsequent runs the script handles everything.)
+
+## Testing
+
+For testing, I have left in the counter variable. You need to uncomment it at three places if you want to limit deletions and uploads:
+
+```python
+#counter : int = 0
+
+for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
+    #print(f"Found directory: {dirnames}, located here:{dirpath}")
+    for file_name in files:
+        if file_name.endswith(".md"):
+            normalised_path = os.path.normpath(dirpath + "/" + file_name)
+            if file_name in included_files:# and counter < 3:
+                #counter += 1
+```

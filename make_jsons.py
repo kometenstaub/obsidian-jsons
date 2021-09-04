@@ -82,16 +82,14 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
 
 
 #print(all_urls)
-counter : int = 0
+#counter : int = 0
 
 for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
-    #print(f"Found directory: {dirnames}, located here:{dirpath}")
     for file_name in files:
         if file_name.endswith(".md"):
             normalised_path = os.path.normpath(dirpath + "/" + file_name)
-            if file_name in included_files and counter < 3:
-                # TODO: remove counter when API works
-                counter += 1
+            if file_name in included_files:# and counter < 3:
+                #counter += 1
 
                 file_dict : dict = {}
                 title : str = ""
