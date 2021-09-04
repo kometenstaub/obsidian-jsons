@@ -156,8 +156,10 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                 #    with open(f"obsidian-jsons/{json_path}", "w", encoding="utf-8") as j:
                 #        j.write(json_string)
 
+                data_to_post : dict = {'api_dev_key':api_dev_key, 'api_user_key':api_user_key, 'api_option':'paste', 'api_paste_code':json_string, 'api_paste_name':title, 'api_paste_format':'json', 'api_paste_private':0, 'api_paste_expire_date':'N'}
+
                 # TODO: make the POST request to pastebin
-                pastebin_id = requests.post(url="https://pastebin.com/api/api_login.php", data={'api_dev_key':api_dev_key, 'api_user_key':api_user_key, 'api_option':'paste', 'api_paste_code':json_string, 'api_paste_name':title, 'api_paste_format':'json', 'api_paste_private':'0', 'api_paste_expire_date':'N'})
+                pastebin_id = requests.post(url="https://pastebin.com/api/api_post.php", data=data_to_post)
                 pastebin_id = pastebin_id.text
                 print(pastebin_id)
 
