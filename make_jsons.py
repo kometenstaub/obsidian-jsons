@@ -10,10 +10,6 @@ from paste_ids import to_delete
 api_dev_key : str = ""
 api_user_key : str = ""
 
-api_option : str = "paste"
-api_paste_format : str = "json"
-api_paste_private : int = 0
-api_paste_expiry_date : str = "N"
 
 try:
     if sys.argv[1]:
@@ -25,9 +21,6 @@ except:
 
 #print(api_dev_key)
 #print(api_user_key)
-
-
-
 
 # deletion of old pastes
 
@@ -43,9 +36,6 @@ if os.path.isfile("paste_ids.py"):
 
 
 
-
-#raise Exception
-
 color : int = 3092790
 tagscript_file : str = """
 {=(b-obsidian):Obsidian/Obsidian}
@@ -53,7 +43,6 @@ tagscript_file : str = """
 """
 tagscript_file_list : list = []
 
-#github_url : str = "https://raw.pastebin.com/"
 
 included_files : list = ["Android app.md", "iOS app.md", "Mobile app beta.md", "Obsidian.md", "Obsidian Mobile.md", "How Obsidian stores data.md", "Third-party plugins.md", "Insider builds.md", "YAML front matter.md", "Catalyst license.md", "Commercial license.md", "Obsidian Publish.md", "Obsidian Sync.md", "Obsidian Unlimited.md", "Refund policy.md", "Add aliases to note.md", "Folding.md", "Format your notes.md", "Link to blocks.md", "Templates.md"] 
 
@@ -123,12 +112,6 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                 with open(normalised_path, "r", encoding="utf-8") as f:
                     content = f.readlines()
                     content_str = "".join(content)
-                    #if len(content) >= 10:
-                    #    result = "".join(content[:10])
-                    #    if len(result) >= 2000:
-                    #        result = result[:2000]
-                    #else:
-                    #    result = "".join(content)
                     result = re.findall(r"^(#{1,4})\s(.+)", content_str, re.MULTILINE)
                     # if there are no headings, use the raw text
                     if len(result) == 0:
@@ -157,6 +140,7 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                 json_string = json.dumps(file_dict, indent=4)
                 #print(json_string)
 
+                ## old code for writing the json files to the file system
                 # make file path for json file
                 #json_path = normalised_path.split("/")[2:]
 
@@ -177,7 +161,6 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
 
                 data_to_post : dict = {'api_dev_key':api_dev_key, 'api_user_key':api_user_key, 'api_option':'paste', 'api_paste_code':json_string, 'api_paste_name':title, 'api_paste_format':'json', 'api_paste_private':0, 'api_paste_expire_date':'N'}
 
-                # TODO: make the POST request to pastebin
                 pastebin_id = requests.post(url="https://pastebin.com/api/api_post.php", data=data_to_post)
                 pastebin_id = pastebin_id.text
                 pastebin_id = str(pastebin_id.split("/")[-1])
@@ -189,9 +172,6 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
 
                 # append files for tagscript file
                 tagscript_title : str = title.replace(" ", "-").lower()
-
-                # TODO: This needs to be replaced with what the POST command returns
-                #after_github_path : str = urllib.parse.quote(json_path)
                 tagscript_file_list.append("{=(" + tagscript_title + "):" + str(pastebin_id) + "}")
             
 
@@ -202,6 +182,6 @@ with open("tagscript", "w", encoding="utf-8") as t:
     t.write(tagscript_file)
 
     
-
+# write list for next deletion
 with open("paste_ids.py", "w", encoding="utf-8") as p:
     p.write("to_delete = " + str(paste_ids))
