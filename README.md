@@ -46,7 +46,6 @@ For testing, I have left in the counter variable. You need to uncomment it at th
 #counter : int = 0
 
 for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
-    #print(f"Found directory: {dirnames}, located here:{dirpath}")
     for file_name in files:
         if file_name.endswith(".md"):
             normalised_path = os.path.normpath(dirpath + "/" + file_name)
