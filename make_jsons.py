@@ -33,7 +33,6 @@ github_url : str = "https://raw.githubusercontent.com/kometenstaub/obsidian-docs
 
 included_files : list = ["Android app.md", "iOS app.md", "Mobile app beta.md", "Obsidian.md", "Obsidian Mobile.md", "How Obsidian stores data.md", "Third-party plugins.md", "Insider builds.md", "YAML front matter.md", "Catalyst license.md", "Commercial license.md", "Obsidian Publish.md", "Obsidian Sync.md", "Obsidian Unlimited.md", "Refund policy.md", "Add aliases to note.md", "Folding.md", "Format your notes.md", "Link to blocks.md", "Templates.md"] 
 
-#counter : int = 0
 
 all_urls : dict = {}
 
@@ -52,7 +51,17 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
             url = url[:-3]
             all_urls[file_name[:-3]] = url
 
+def replace_links(content_str : str) -> str:
+    content_str = content_str
+    link_result = re.compile(r"\[\[(.*?)(?=(?:\]\]|#|\|))(?:.+?)?\]\]", re.MULTILINE)
+    for match in link_result.finditer(content_str):
+        link_url : str = all_urls[match.group(1)]
+        content_str = content_str.replace(match.group(0), f"[{match.group(1)}]({link_url})")
+    return content_str
+
+
 #print(all_urls)
+#counter : int = 0
 
 for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
     #print(f"Found directory: {dirnames}, located here:{dirpath}")
@@ -98,18 +107,13 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                     # if there are no headings, use the raw text
                     if len(result) == 0:
                         result = "".join(content[:10])
-                        link_result = re.compile(r"\[\[(.*?)(?=(?:\]\]|#|\|))(?:.+?)?\]\]", re.MULTILINE)
-                        for match in link_result.finditer(content_str):
-                            print(match.group(1))
-                            print(match.group(0))
-                            link_url : str = all_urls[match.group(1)]
-                            content_str = content_str.replace(match.group(0), f"[{match.group(1)}]({link_url})")
-                            
-                        print(content_str)
-                        if len(result) >= 2000:
-                            result = result[:2000]
-                    elif len(content) < 10:
-                        result = "".join(content)
+                        content_str = replace_links(content_str)
+                        # convert highlights to bold
+                        content_str = re.sub(r"==(.+?)==", r"**\1**", content_str)
+                        # limit result to 10 lines
+                        result = "\n".join(content_str.split("\n")[:10])
+                    # if there are headings, replace them all with links to the headings
+                    # on the Obsidian Publish help site
                     else:
                         result_headings : list = []
                         for el in result:
@@ -157,5 +161,5 @@ tagscript_file += "\n".join(tagscript_file_list)
 with open("tagscript", "w", encoding="utf-8") as t:
     t.write(tagscript_file)
 
-
+    
 
