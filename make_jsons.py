@@ -22,19 +22,26 @@ try:
 except:
     pass
 
+print(api_dev_key)
+print(api_user_key)
+
+#raise Exception
+
 color : int = 3092790
 tagscript_file : str = """
 {=(b-obsidian):Obsidian/Obsidian}
-{c:cembed https://raw.githubusercontent.com/kometenstaub/obsidian-docs-json/main/{{path-to-json}}}\n\n
+{c:cembed https://pastebin.com/{{block}}}\n\n
 """
 tagscript_file_list : list = []
 
-github_url : str = "https://raw.githubusercontent.com/kometenstaub/obsidian-docs-json/main/"
+#github_url : str = "https://raw.pastebin.com/"
 
 included_files : list = ["Android app.md", "iOS app.md", "Mobile app beta.md", "Obsidian.md", "Obsidian Mobile.md", "How Obsidian stores data.md", "Third-party plugins.md", "Insider builds.md", "YAML front matter.md", "Catalyst license.md", "Commercial license.md", "Obsidian Publish.md", "Obsidian Sync.md", "Obsidian Unlimited.md", "Refund policy.md", "Add aliases to note.md", "Folding.md", "Format your notes.md", "Link to blocks.md", "Templates.md"] 
 
 
 all_urls : dict = {}
+
+paste_ids : list = []
 
 for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
     for file_name in files:
@@ -61,16 +68,16 @@ def replace_links(content_str : str) -> str:
 
 
 #print(all_urls)
-#counter : int = 0
+counter : int = 0
 
 for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
     #print(f"Found directory: {dirnames}, located here:{dirpath}")
     for file_name in files:
         if file_name.endswith(".md"):
             normalised_path = os.path.normpath(dirpath + "/" + file_name)
-            if file_name in included_files:
+            if file_name in included_files and counter < 1:
                 # TODO: remove counter when API works
-                #counter += 1
+                counter += 1
 
                 file_dict : dict = {}
                 url : str = "https://help.obsidian.md/"
@@ -122,23 +129,23 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                             result_headings.append(heading)
                         result = "\n\n".join(result_headings)
 
-                    #print(file_name)
+                    print(file_name)
                     #print(normalised_path)
-                    #print(result)
+                    print(result)
                     file_dict["description"] = result
 
                 # convert dict to json
                 json_string = json.dumps(file_dict, indent=4)
-
+                print(json_string)
 
                 # make file path for json file
-                json_path = normalised_path.split("/")[2:]
+                #json_path = normalised_path.split("/")[2:]
 
                 # json_folder is where the jsons will we stored
-                json_folder : str = "/".join(json_path[:-1])
+                #json_folder : str = "/".join(json_path[:-1])
 
-                json_path = "/".join(json_path)
-                json_path = json_path.replace(".md", ".json")
+                #json_path = "/".join(json_path)
+                #json_path = json_path.replace(".md", ".json")
 
                 ## write json files only if "json" argument provided
                 #if if_json:
@@ -149,10 +156,21 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                 #    with open(f"obsidian-jsons/{json_path}", "w", encoding="utf-8") as j:
                 #        j.write(json_string)
 
+                # TODO: make the POST request to pastebin
+                pastebin_id = requests.post(url="https://pastebin.com/api/api_login.php", data={'api_dev_key':api_dev_key, 'api_user_key':api_user_key, 'api_option':'paste', 'api_paste_code':json_string, 'api_paste_name':title, 'api_paste_format':'json', 'api_paste_private':'0', 'api_paste_expire_date':'N'})
+                pastebin_id = pastebin_id.text
+                print(pastebin_id)
+
+                paste_ids.append(pastebin_id)
+
+
+
                 # append files for tagscript file
                 tagscript_title : str = title.replace(" ", "-").lower()
-                after_github_path : str = urllib.parse.quote(json_path)
-                tagscript_file_list.append("{=(" + tagscript_title + "):" + after_github_path + "}")
+
+                # TODO: This needs to be replaced with what the POST command returns
+                #after_github_path : str = urllib.parse.quote(json_path)
+                tagscript_file_list.append("{=(" + tagscript_title + "):" + str(pastebin_id) + "}")
             
 
 tagscript_file += "\n".join(tagscript_file_list)
@@ -163,3 +181,5 @@ with open("tagscript", "w", encoding="utf-8") as t:
 
     
 
+with open("paste_ids.py", "w", encoding="utf-8") as p:
+    p.write("to_delete = " + str(paste_ids))
