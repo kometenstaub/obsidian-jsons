@@ -4,3 +4,4 @@ example.json
 .vscode/
 tagscript
 __pycache__/
+paste_ids.py
