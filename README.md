@@ -37,7 +37,6 @@ All files will be uploaded, the old files will be deleted on Pastebin.
 
 The `tagscript` file is updated every time, so is the `paste_ids.py` file.
 
-Before the script is run the first time, you need to make sure that the list in `paste_ids.py` is empty. (Because it still includes the IDs from my tests. For subsequent runs the script handles everything.)
 
 ## Testing
 
