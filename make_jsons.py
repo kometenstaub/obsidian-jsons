@@ -17,7 +17,7 @@ try:
     if sys.argv[2]:
         api_user_key = sys.argv[2]
 except:
-    pass
+    raise Exception("You didn't provide the api_dev_key or api_user_key or both.")
 
 #print(api_dev_key)
 #print(api_user_key)
