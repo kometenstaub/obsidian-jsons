@@ -144,25 +144,8 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                 json_string = json.dumps(file_dict, indent=4)
                 #print(json_string)
 
-                ## old code for writing the json files to the file system
-                # make file path for json file
-                #json_path = normalised_path.split("/")[2:]
 
-                # json_folder is where the jsons will we stored
-                #json_folder : str = "/".join(json_path[:-1])
-
-                #json_path = "/".join(json_path)
-                #json_path = json_path.replace(".md", ".json")
-
-                ## write json files only if "json" argument provided
-                #if if_json:
-                #    # check if directory already exists; if not, create it
-                #    if not os.path.isdir(f"obsidian-jsons/{json_folder}"):
-                #        os.makedirs(f"obsidian-jsons/{json_folder}")
-                #    # write the json string
-                #    with open(f"obsidian-jsons/{json_path}", "w", encoding="utf-8") as j:
-                #        j.write(json_string)
-
+                # upload files to pastebin
                 data_to_post : dict = {'api_dev_key':api_dev_key, 'api_user_key':api_user_key, 'api_option':'paste', 'api_paste_code':json_string, 'api_paste_name':title, 'api_paste_format':'json', 'api_paste_private':0, 'api_paste_expire_date':'N'}
 
                 pastebin_id = requests.post(url="https://pastebin.com/api/api_post.php", data=data_to_post)
