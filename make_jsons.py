@@ -102,13 +102,13 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                 title : str = ""
                 description : str = ""
 
-                # URL
-                url = get_url(normalised_path)
-                file_dict["url"] = url
-            
                 # title
-                title = file_name.replace(".md", "")
+                title = file_name[:-3]
                 file_dict["title"] = title
+
+                # URL
+                url = all_urls[title]
+                file_dict["url"] = url
             
                 # color
                 file_dict["color"] = color
@@ -119,7 +119,6 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                     result = re.findall(r"^(#{1,4})\s(.+)", content_str, re.MULTILINE)
                     # if there are no headings, use the raw text
                     if len(result) == 0:
-                        result = "".join(content[:10])
                         content_str = replace_links(content_str)
                         # convert highlights to bold
                         content_str = re.sub(r"==(.+?)==", r"**\1**", content_str)
@@ -130,10 +129,18 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                     else:
                         result_headings : list = []
                         for el in result:
-                            heading : str = el[0] + f" [{el[1]}]" + f"({url}/"
+                            heading : str = f"[{el[1]}]" + f"({url}/"
                             heading += "#" + urllib.parse.quote(el[1]).replace("%20", "+") + ")"
+                            if len(el[0]) == 1:
+                                heading = "__**" + heading + "**__"
+                            elif len(el[0]) == 2:
+                                heading = "**" + heading + "**"
+                            elif len(el[0]) == 3:
+                                heading = "- " + heading
+                            else:
+                                heading = "  - " + heading
                             result_headings.append(heading)
-                        result = "\n\n".join(result_headings)
+                        result = "\n".join(result_headings)
 
                     #print(file_name)
                     #print(normalised_path)
@@ -146,7 +153,7 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
 
 
                 # upload files to pastebin
-                data_to_post : dict = {'api_dev_key':api_dev_key, 'api_user_key':api_user_key, 'api_option':'paste', 'api_paste_code':json_string, 'api_paste_name':title, 'api_paste_format':'json', 'api_paste_private':0, 'api_paste_expire_date':'N'}
+                data_to_post : dict = {'api_dev_key':api_dev_key, 'api_user_key':api_user_key, 'api_option':'paste', 'api_paste_code':json_string, 'api_paste_name':title, 'api_paste_format':'json', 'api_paste_private':1, 'api_paste_expire_date':'N'}
 
                 pastebin_id = requests.post(url="https://pastebin.com/api/api_post.php", data=data_to_post)
                 pastebin_id = pastebin_id.text
@@ -154,8 +161,6 @@ for dirpath, dirnames, files in os.walk("./obsidian-docs/en/"):
                 print(pastebin_id)
 
                 paste_ids.append(pastebin_id)
-
-
 
                 # append files for tagscript file
                 tagscript_title : str = title.replace(" ", "-").lower()
@@ -168,7 +173,6 @@ tagscript_file += "\n".join(tagscript_file_list)
 with open("tagscript", "w", encoding="utf-8") as t:
     t.write(tagscript_file)
 
-    
 # write list for next deletion
 with open("paste_ids.py", "w", encoding="utf-8") as p:
     p.write("to_delete = " + str(paste_ids))

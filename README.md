@@ -37,6 +37,8 @@ All files will be uploaded, the old files will be deleted on Pastebin.
 
 The `tagscript` file is updated every time, so is the `paste_ids.py` file.
 
+The paste `api_paste_private` key is set to 1, so pastes are unlisted. Keep in mind the limit of 10 unlisted pastes for free accounts. Set it to 0 to upload public pastes.
+
 
 ## Testing
 
