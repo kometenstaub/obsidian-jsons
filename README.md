@@ -1,6 +1,6 @@
 # Obsidian docs to json for Carl-bot
 
-This repo contains a python script that will transform the Obsidian docs into json files (limited to the first 10 lines of each file or all the headings, if any) for use with Carl-bot.
+This repo contains a python script that will transform some of the Obsidian docs into json files. The content is either limited to the first 10 lines of each file or all the headings, if any, which are linked to the published help vault. This script is for use with Carl-bot tags.
 
 ## Installation
 
