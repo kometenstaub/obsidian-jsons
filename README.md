@@ -7,7 +7,7 @@ This repo contains a python script that will transform the Obsidian docs into js
 1. Clone this repo.
 
 ```bash
-git clone https://github.com/kometenstaub/obsidian-jsons
+git clone https://github.com/obsidian-community/obsidian-jsons
 ```
 
 2. `cd` into the cloned folder and run
